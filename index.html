@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f3eb">
+  <meta name="description" content="나뭇잎 아래 작은 숨바꼭질. 60초 동안 숲속의 거미를 찾아보세요. Three.js로 만든 작은 3D 게임.">
+  <title>UNDERLEAF — 나뭇잎 아래, 작은 숨바꼭질</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M20 3C10 2 3 6 4 13c1 8 15 10 16-10Z"/><path d="M4 21 16 8M8 16l-1-5m5 1 5 1"/></symbol>
+    <symbol id="i-spider" viewBox="0 0 24 24"><ellipse cx="12" cy="14" rx="4" ry="5"/><circle cx="12" cy="7" r="2.7"/><path d="m8 10-4-3-1-4m5 10-5-1-2-3m7 7-5 1-2 4m8-2-4 3v3m11-15 4-3 1-4m-5 10 5-1 2-3m-7 7 5 1 2 4m-8-2 4 3v3"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="m11 4-5 4H3v8h3l5 4Zm4 4c3 2 3 6 0 8m3-11c5 4 5 10 0 14"/></symbol>
+    <symbol id="i-touch" viewBox="0 0 24 24"><path d="M9 13V5a2 2 0 0 1 4 0v7l2-1 5 3-2 7h-8l-6-7a2 2 0 0 1 3-2l2 1Z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v5l3 2M9 2h6M12 2v3"/></symbol>
+  </defs></svg>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="wordmark" href="./" aria-label="UNDERLEAF 홈"><span class="brand-icon"><svg><use href="#i-leaf"/></svg></span>underleaf<span class="wordmark-dot">.</span></a>
+      <span class="header-note">작은 숲에서 보내는 60초</span>
+      <button id="sound-button" class="sound-button" type="button" aria-label="효과음 켜기" aria-pressed="false"><svg><use href="#i-sound"/></svg><span id="sound-label">SOUND OFF</span></button>
+    </header>
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <div><p class="eyebrow"><span></span> A TINY FOREST ADVENTURE</p><h1 id="page-title">나뭇잎 아래, <em>작은 숨바꼭질.</em></h1></div>
+        <p class="intro-note">살금살금, 꼬물꼬물.<br>숲속의 작은 장난꾸러기를 찾아보세요.</p>
+      </section>
+      <section id="game" class="game-frame" aria-label="거미 잡기 게임">
+        <div id="scene" class="scene"></div>
+        <div class="grain" aria-hidden="true"></div>
+        <div class="hud" aria-label="게임 현황">
+          <div class="score-panel"><span class="hud-icon"><svg><use href="#i-spider"/></svg></span><div><span class="hud-label">SCORE</span><strong id="score">00</strong></div><span class="score-unit">점</span></div>
+          <div class="field-label"><span></span> THE LITTLE WOODLAND</div>
+          <div id="time-panel" class="time-panel"><svg><use href="#i-clock"/></svg><div><span class="hud-label">TIME</span><strong id="time">01:00</strong></div><svg class="time-ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-track" cx="18" cy="18" r="15"/><circle id="time-progress" cx="18" cy="18" r="15" pathLength="100"/></svg></div>
+        </div>
+        <div id="overlay" class="overlay">
+          <div class="welcome-card">
+            <div class="card-leaf"><svg><use href="#i-leaf"/></svg></div>
+            <p id="card-eyebrow" class="card-eyebrow">READY, LITTLE EXPLORER?</p>
+            <h2 id="card-title">꼭꼭 숨어라,<br><span>여덟 다리 보일라.</span></h2>
+            <p id="card-description" class="card-description">나뭇잎 밖으로 나온 거미를 톡!<br>10초마다 등장하는 금색 거미는 +5점!</p>
+            <div id="result" class="result" hidden><strong id="final-score">0</strong><span>점을 획득했어요</span><p id="best-score"></p></div>
+            <button id="start-button" class="primary-button" type="button" disabled><span id="start-label">LOADING</span><svg><use href="#i-arrow"/></svg></button>
+            <p id="card-hint" class="card-hint">클릭 또는 터치로 플레이</p>
+          </div>
+        </div>
+        <div id="catch-labels" class="catch-labels" aria-hidden="true"></div>
+        <div class="field-footer"><span><span class="live-dot"></span><span id="game-status">숲이 깨어나는 중이에요</span></span><span class="field-number">FIELD NOTES — 001</span></div>
+        <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
+      </section>
+      <section class="instructions" aria-label="게임 방법">
+        <div class="instruction"><span class="instruction-icon"><svg><use href="#i-touch"/></svg></span><p><strong>보이면, 톡!</strong><span>거미를 클릭하거나 터치하세요.</span></p></div>
+        <div class="instruction"><span class="instruction-icon"><svg><use href="#i-leaf"/></svg></span><p><strong>나뭇잎은 비밀 은신처</strong><span>가려진 거미가 나올 때까지 기다려요.</span></p></div>
+        <div class="instruction"><span class="instruction-icon"><svg><use href="#i-clock"/></svg></span><p><strong>10초마다 금색 거미!</strong><span>일반 거미 +1점 · 금색 거미 +5점</span></p></div>
+      </section>
+    </main>
+    <footer class="site-footer"><span>TAKE A LITTLE PLAY BREAK.</span><span>Made for curious eyes <svg><use href="#i-leaf"/></svg></span></footer>
+  </div>
+  <script type="module" src="./src/game.js"></script>
+  <noscript>이 게임을 실행하려면 브라우저에서 JavaScript를 켜주세요.</noscript>
+</body>
+</html>
